@@ -1,38 +1,77 @@
 import React from "react";
-import ListForm from "./components/TodoComponents/TodoForm";
-
-const todoData = [];
-
+import TodoList from "./components/TodoComponents/TodoList";
+import TodoForm from "./components/TodoComponents/TodoForm";
 class App extends React.Component {
-  // you will need a place to store your state in this component.
-  // design `App` to be the parent component of your application.
-  // this component is going to take care of state, and any change handlers you need to work with your state
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      task: todoData,
-      id: Date.now(),
-      completed: false
+      task: {
+        task: "",
+        id: "",
+        completed: false
+      },
+      todoData: [
+        {
+          task: "Example Todo",
+          id: Date.now(),
+          completed: false
+        }
+      ]
     };
   }
+  clearTodos = () => {
+    this.setState({
+      todoData: [
+        {
+          task: "Example Todo",
+          id: 1528817077286,
+          completed: false
+        }
+      ]
+    });
+  };
+  addTodos = event => {
+    event.preventDefault();
+    this.setState({
+      task: {},
+      todoData: [...this.state.todoData, this.state.task]
+    });
+  };
 
-  addTask = taskName => {
-    const todoData = {
-      task: taskName,
-      id: Date.now(),
-      completed: false
-    };
-    this.setState({});
+  handleChange = event => {
+    event.preventDefault();
+    this.setState({
+      task: {
+        [event.target.name]: event.target.value,
+        id: Date.now(),
+        completed: false
+      }
+    });
+  };
+
+  deleteItem = id => {
+    console.log("deleted");
+    const filteredItems = this.state.todoData.filter(item => {
+      return item.id !== id;
+    });
+    this.setState({
+      todoData: filteredItems
+    });
   };
 
   render() {
     return (
       <div>
-        <h2>Welcome to your Todo App!</h2>
-        <ListForm addItem={this.addItem} />
+        <h1>Tasks</h1>
+        <TodoList toDoList={this.state.todoData} deleteItem={this.deleteItem} />
+        <TodoForm
+          clear={this.clearTodos}
+          add={this.addTodos}
+          toDoList={this.state.todoData}
+          handleChange={this.handleChange}
+        />
       </div>
     );
   }
 }
-
 export default App;
